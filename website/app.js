@@ -74,6 +74,7 @@ const updateData = (zip, user_response) => {
       alert(i.message);
     });
 };
+//dd
 
 // actions
 document.getElementById("generate").addEventListener("click", (ev) => {
