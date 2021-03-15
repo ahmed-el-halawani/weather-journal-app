@@ -33,12 +33,10 @@ app.use(ex.static("website"));
 app.listen(port, host, callBackListen);
 
 app.get("/all", (req, res) => {
-  console.log(projectData);
   res.send(projectData);
 });
 
 app.post("/setData", (req, res) => {
   projectData = req.body;
-  console.log(projectData);
   res.send(projectData);
 });

@@ -1,6 +1,6 @@
 /* Global Variables */
 const apiKey = "cd376bbf80e09726e4d57a05d87876c0";
-const baseUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&`;
+const baseUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&units=metric&`;
 const testZip = "94040";
 /**
  * @typedef {object} a
@@ -11,7 +11,7 @@ const testZip = "94040";
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
+let newDate = d.getMonth() + 1 + "." + d.getDate() + "." + d.getFullYear();
 
 const createUrl = (zip) => {
   return baseUrl + `zip=${zip},us`;
@@ -22,13 +22,13 @@ const createUrl = (zip) => {
  * @param {a} data
  */
 const updateUi = (data) => {
-  document.getElementById("date").innerText = data.date;
-  document.getElementById("temp").innerText = data.temperature;
-  document.getElementById("content").innerText = data.user_response;
+  document.getElementById("date").innerHTML = data.date;
+  document.getElementById("temp").innerHTML = data.temperature;
+  document.getElementById("content").innerHTML = data.user_response;
 };
 
 //ajex calls
-const getData = async (url) => {
+const getWetherData = async (url) => {
   const res = await fetch(url);
   try {
     return await res.json();
@@ -57,8 +57,17 @@ const postData = async (url, data) => {
   }
 };
 
+const getData = async () => {
+  const res = await fetch("/all");
+  try {
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};
+
 const updateData = (zip, user_response) => {
-  getData(createUrl(zip))
+  getWetherData(createUrl(zip))
     .then((i) => {
       if (i.cod == 200)
         return postData("/setData", {
@@ -66,7 +75,9 @@ const updateData = (zip, user_response) => {
           temperature: i.main.temp + "°C",
           user_response: user_response,
         }).then((j) => {
-          updateUi(j);
+          getData().then((i) => {
+            updateUi(i);
+          });
         });
       if (i.cod == 404) return alert(i.message);
     })
